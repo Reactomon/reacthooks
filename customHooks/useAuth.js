@@ -1,19 +1,33 @@
-import React, { useState, useEffect, createContext } from 'react';
+import React, { useState, createContext } from 'react';
 
 const authContext = createContext();
-const authContextProvider = authContext.Provider;
-const authContextConsumer = authContext.Consumer;
+const AuthContextProvider = authContext.Provider;
 
 const App = () => {
     return (
         <AuthProvider>
-            <p>Hey AuthService</p>
+            <p>Here one can consume AuthContextConsumer</p>
         </AuthProvider>    
     )
 }
 
 const AuthProvider = ({ children }) => {
     const auth = useAuthService();
-    return <authContextProvider value={auth}>{children}</authContextProvider>;
+    return <AuthContextProvider value={auth}>{children}</AuthContextProvider>;
+}
+
+const useAuthService = () => {
+    const [ userInfo, setUserInfo ] = useState(null);
+    const login = (username, password) => {
+        return loginApi(username, password)
+                .then(response => setUserInfo(response));
+    }
+
+    const logout = () => {
+        return unauthenticate()
+                .then(setUserInfo(null));
+    }
+
+    return { userInfo, login, logout };
 }
 
